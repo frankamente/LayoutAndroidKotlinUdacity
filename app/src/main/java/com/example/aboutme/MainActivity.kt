@@ -7,31 +7,38 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import com.example.aboutme.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+    private val myName: MyName = MyName(name = "Fran Márquez")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val doneButton: Button = findViewById(R.id.done_button)
-        doneButton.setOnClickListener {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.myName = myName
+        binding.doneButton.setOnClickListener {
             addNickname(it)
         }
     }
 
     private fun addNickname(view: View) {
-        val editText: EditText = findViewById(R.id.nickname_edit)
-        val nicknameText: TextView = findViewById(R.id.nickname_text)
-        if (!editText.text.isNullOrEmpty()) {
-            nicknameText.text = editText.text
-            nicknameText.setTextColor(Color.BLACK)
-            nicknameText.visibility = View.VISIBLE
-            view.visibility = View.GONE
-            editText.visibility = View.GONE
-        } else{
-            nicknameText.text = resources.getText(R.string.enter_name)
-            nicknameText.visibility = View.VISIBLE
-            nicknameText.setTextColor(Color.RED)
+        binding.apply {
+
+            if (!nicknameEdit.text.isNullOrEmpty()) {
+                myName?.nickname = nicknameEdit.text.toString()
+                invalidateAll()
+                nicknameText.setTextColor(Color.BLACK)
+                nicknameText.visibility = View.VISIBLE
+                view.visibility = View.GONE
+                nicknameEdit.visibility = View.GONE
+            } else {
+                myName?.nickname = resources.getText(R.string.enter_name).toString()
+                nicknameText.visibility = View.VISIBLE
+                nicknameText.setTextColor(Color.RED)
+            }
         }
     }
 
